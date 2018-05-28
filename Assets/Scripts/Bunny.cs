@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class Bunny : MonoBehaviour
 {   
 	Animator animator;
+    Rigidbody2D rb2D;
+    SpriteRenderer sprite;
 
-    public Rigidbody2D rb2D;
-	public SpriteRenderer sprite;
+    public AudioClip gunFire;
     public GameObject weapon;
     public GameObject casing;
     public GameObject enemy;
     public GameObject firingPoint;
+
+    private AudioSource source;
    
 	bool canFire = true;
     bool isJumping = true;
@@ -19,6 +22,7 @@ public class PlayerManager : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
+        source = GetComponent<AudioSource>();
 		animator = GetComponent<Animator>();
 		rb2D = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
@@ -34,16 +38,15 @@ public class PlayerManager : MonoBehaviour
         Controls();
 
         SetAnimationState();
-
-        RotateWeapon();
     }
 
     private void Shoot()
     {
+        source.PlayOneShot(gunFire, 1f);
         weapon.GetComponent<Animator>().SetBool("isFiring", true);
         canFire = false;
         AddCasing();
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Debug.DrawRay(firingPoint.transform.position, mousePosition - firingPoint.transform.position, Color.white);
 
         RaycastHit2D hit = Physics2D.Raycast(
@@ -52,19 +55,32 @@ public class PlayerManager : MonoBehaviour
             Mathf.Infinity,
             LayerMask.GetMask("Enemy")
         );
+
         if (hit.collider != null)
         {
-            Debug.Log("hit");
-            Destroy(hit.transform.gameObject);
-            float distance = Mathf.Abs(hit.point.y - transform.position.y);
-            rb2D.AddForce(Vector3.up * 10f);
+            float angleRad = Mathf.Atan2(
+                mousePosition.y - transform.position.y,
+                mousePosition.x - transform.position.x
+            );
+            float angleDeg = (180 / Mathf.PI) * angleRad;
+            Vector3 v = Quaternion.AngleAxis(angleDeg - 90f, Vector3.forward) * Vector3.up;
+            // TODO: Make the force relative to damage
+            hit.collider.gameObject.GetComponent<Rigidbody2D>().velocity = v * 10f;
+            if (hit.collider is BoxCollider2D) {
+                hit.collider.gameObject.GetComponent<Enemy>().Hurt(angleDeg, 1f);    
+            }
+            if (hit.collider is CircleCollider2D)
+            {
+                hit.collider.gameObject.GetComponent<Enemy>().Hurt(angleDeg, 3f); 
+            }
+
         }
     }
 
     private void Controls()
     {
         Vector2 velocity = rb2D.velocity;
-        velocity.x = Input.GetAxis("Horizontal") * 10f;
+        velocity.x = Input.GetAxis("Horizontal") * 20f;
 
         if (velocity.x < 0f)
         {
@@ -80,7 +96,7 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetButton("Vertical") && isJumping == false)
         {
             isJumping = true;
-            velocity.y = 20f;
+            velocity.y = 30f;
         }
 
         rb2D.velocity = velocity;
@@ -97,20 +113,11 @@ public class PlayerManager : MonoBehaviour
     private void AddCasing()
     {
         GameObject casingClone = Instantiate(casing, weapon.transform.position, Quaternion.identity);
-        casingClone.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90f));
-        Destroy(casingClone, 5);
+        Vector3 v = Quaternion.AngleAxis(Random.Range(270f, 360f), Vector3.forward) * Vector3.up;
+        casingClone.GetComponent<Rigidbody2D>().velocity = v * 10f;
+        Destroy(casingClone, 1);
     }
 
-    private void RotateWeapon()
-    {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float angleRad = Mathf.Atan2(
-            mousePosition.y - weapon.transform.position.y,
-            mousePosition.x - weapon.transform.position.x
-        );
-        float angleDeg = (180 / Mathf.PI) * angleRad;
-        weapon.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angleDeg));
-    }
 
     private void SetAnimationState()
     {
@@ -132,4 +139,5 @@ public class PlayerManager : MonoBehaviour
 	{
 		isJumping = false;	
 	}
+
 }
