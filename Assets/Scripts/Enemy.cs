@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour {
     {
         if (health < 3f){
             health += .01f;
-            Debug.Log(health);
         }
     }
 
@@ -40,6 +39,7 @@ public class Enemy : MonoBehaviour {
             GameObject bitClone = Instantiate(bit, transform.position, Quaternion.identity);
             Vector3 v = Quaternion.AngleAxis(angle + Random.Range(-45f, 45f), Vector3.forward) * Vector3.up;
             bitClone.GetComponent<Rigidbody2D>().velocity = v * Random.Range(-10f, 10f);
+            Destroy(bitClone, 1);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour 
 {   
-	Animator animator;
+    public Animator animator;
     public GameObject firingPoint;
 
 	public void Start()
@@ -28,8 +28,7 @@ public class Weapon : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angleDeg));
     }
 
-    public void ResetIsFiring() 
-	{
-		animator.SetBool("isFiring", false);
-	}
+    public void Reloaded() {
+        animator.SetBool("isReloading", false);
+    }
 }

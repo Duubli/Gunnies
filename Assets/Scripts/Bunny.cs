@@ -9,15 +9,25 @@ public class Bunny : MonoBehaviour
     SpriteRenderer sprite;
 
     public AudioClip gunFire;
+    public AudioClip clickSound;
+    public AudioClip reloadSound;
+
     public GameObject weapon;
     public GameObject casing;
     public GameObject enemy;
     public GameObject firingPoint;
-
+    public GameObject bit;
+    public GameObject clip;
+     
     private AudioSource source;
    
 	bool canFire = true;
     bool isJumping = true;
+    bool isReloading = false;
+
+    float timer = 0f;
+
+    public int ammo = 30;
 
 	// Use this for initialization
 	void Start()
@@ -26,10 +36,6 @@ public class Bunny : MonoBehaviour
 		animator = GetComponent<Animator>();
 		rb2D = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
-        for (int i = 0; i <= 10; i++)
-        {
-            Instantiate(enemy, new Vector2(i * 5f -26f, 0f), Quaternion.identity);
-        }
     }
 
 	// Update is called once per frame
@@ -40,10 +46,19 @@ public class Bunny : MonoBehaviour
         SetAnimationState();
     }
 
+    private void FixedUpdate()
+    {
+        timer--;
+        if (timer <= 0f) {
+            timer = 50f;
+            Instantiate(enemy, new Vector2(Random.Range(0f, 10f) * 5f - 26f, 0f), Quaternion.identity);
+        }
+    }
+
     private void Shoot()
     {
         source.PlayOneShot(gunFire, 1f);
-        weapon.GetComponent<Animator>().SetBool("isFiring", true);
+        weapon.GetComponent<Animator>().SetTrigger("Fire");
         canFire = false;
         AddCasing();
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -53,7 +68,7 @@ public class Bunny : MonoBehaviour
             firingPoint.transform.position, 
             mousePosition - firingPoint.transform.position,
             Mathf.Infinity,
-            LayerMask.GetMask("Enemy")
+            LayerMask.GetMask("Enemy", "Background")
         );
 
         if (hit.collider != null)
@@ -66,14 +81,22 @@ public class Bunny : MonoBehaviour
             Vector3 v = Quaternion.AngleAxis(angleDeg - 90f, Vector3.forward) * Vector3.up;
             // TODO: Make the force relative to damage
             hit.collider.gameObject.GetComponent<Rigidbody2D>().velocity = v * 10f;
-            if (hit.collider is BoxCollider2D) {
+
+            for (int i = 0; i <= 50; i++)
+            {
+                GameObject bitClone = Instantiate(bit, hit.point, Quaternion.identity);
+                Vector3 velocity = Quaternion.AngleAxis(Random.Range(0f, 360f), Vector3.forward) * Vector3.up;
+                bitClone.GetComponent<Rigidbody2D>().velocity = velocity * Random.Range(-10f, 10f);
+                Destroy(bitClone, 1);
+            }
+
+            if (hit.collider is BoxCollider2D && hit.collider.gameObject.name == "Enemy") {
                 hit.collider.gameObject.GetComponent<Enemy>().Hurt(angleDeg, 1f);    
             }
             if (hit.collider is CircleCollider2D)
             {
                 hit.collider.gameObject.GetComponent<Enemy>().Hurt(angleDeg, 3f); 
             }
-
         }
     }
 
@@ -103,7 +126,22 @@ public class Bunny : MonoBehaviour
 
         if (Input.GetButtonDown("Fire") && canFire)
         {
-            Shoot();
+            if (ammo > 0) {
+                Shoot();
+                ammo--;
+                isReloading = false;
+            } else {
+                source.PlayOneShot(clickSound);
+            }
+        }
+
+        if (Input.GetButton("Reload") && isReloading == false) {
+            GameObject clipClone = Instantiate(clip, transform.position, Quaternion.identity);
+            Destroy(clipClone, 10);
+            weapon.GetComponent<Animator>().SetBool("isReloading", true);
+            isReloading = true;
+            ammo = 30;
+            source.PlayOneShot(reloadSound);
         }
 
         // Trigger must be released to fire again

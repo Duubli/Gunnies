@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114302305025689362}
   - component: {fileID: 95435842147573340}
   - component: {fileID: 82147256896737010}
+  - component: {fileID: 58005752416844900}
   m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
@@ -65,6 +66,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!58 &58005752416844900
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1852573443409402}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.18414629}
+  serializedVersion: 2
+  m_Radius: 0.42331898
 --- !u!61 &61856188116355906
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -77,7 +93,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0005878955, y: -0.31635404}
+  m_Offset: {x: -0.0005878806, y: -0.7166722}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -88,7 +104,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9703438, y: 1.7618265}
+  m_Size: {x: 0.9703438, y: 0.9611902}
   m_EdgeRadius: 0
 --- !u!82 &82147256896737010
 AudioSource:
@@ -215,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hurtSound: {fileID: 8300000, guid: 91e7ef15f504e4c2c854e52a1e61e97d, type: 3}
-  health: 2
+  health: 3
   bit: {fileID: 1176964325599752, guid: 4a40473d2fd8242e78f91b397c611cf2, type: 2}
 --- !u!212 &212055855464022834
 SpriteRenderer:
