@@ -22,12 +22,12 @@ GameObject:
   - component: {fileID: 212055855464022834}
   - component: {fileID: 61856188116355906}
   - component: {fileID: 50593105007173368}
-  - component: {fileID: 114302305025689362}
   - component: {fileID: 95435842147573340}
   - component: {fileID: 82147256896737010}
   - component: {fileID: 58005752416844900}
+  - component: {fileID: 114280200844309478}
   m_Layer: 10
-  m_Name: Enemy
+  m_Name: Bunny
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -219,7 +219,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114302305025689362
+--- !u!114 &114280200844309478
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -227,12 +227,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1852573443409402}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93cdbbada20994cd1ad52adfcb879c4c, type: 3}
+  m_Script: {fileID: 11500000, guid: 661c18361f7ef4932b1eec65fd8e59d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hurtSound: {fileID: 8300000, guid: 91e7ef15f504e4c2c854e52a1e61e97d, type: 3}
   health: 3
-  bit: {fileID: 1176964325599752, guid: 4a40473d2fd8242e78f91b397c611cf2, type: 2}
+  particle: {fileID: 1176964325599752, guid: 4a40473d2fd8242e78f91b397c611cf2, type: 2}
+  weapon: {fileID: 1515193105230302, guid: 420f144d163b24b8db49db857b4e8e12, type: 2}
+  rb2D: {fileID: 0}
+  isJumping: 1
+  target: {x: 0, y: 0, z: 0}
 --- !u!212 &212055855464022834
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 61799506798092100}
   - component: {fileID: 114553046737160758}
   m_Layer: 9
-  m_Name: Drop
+  m_Name: Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -132,7 +132,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2116414813
-  m_SortingLayer: -1
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300012, guid: 8eedda5685955420dbed3d59f3b83597, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
